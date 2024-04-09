@@ -1,6 +1,21 @@
 # Azure で CLUSTERPRO
 
-```powershell
+## VM作成
+
+```ps1
+# リソースグループを作成
+$ResourceGroupName = "exampleRG"
+$Location = "westus2"
+az group create --name $ResourceGroupName --location $Location
+
+# VM を作成
+$AdminUsername = "kaz"
+az deployment group create --resource-group $ResourceGroupName --template-file main.bicep --parameters adminUsername=$AdminUsername
+```
+
+## vNIC 追加
+
+```ps1
 ## NIC 追加
 # resource-group: 既存
 # name: これから作る NIC の名前
@@ -28,12 +43,16 @@ PS C:\Users\User>
 az network nic create --resource-group exampleRG --name vnic3 --vnet-name vnet1 --subnet subnet2 --network-security-group vcom1-nsg
 
 # 10.0.1.4/24 の IP アドレスが割り当てられた。
+
 # この vnic3 を VM に追加してみる。
 az vm nic add --resource-group exampleRG --vm-name vcom1 --nics vnic3
 
 # 追加成功した。
-# VMを起動して、IPアドレス の構成を確認する。
+```
 
+## VMを起動して、IPアドレス の構成を確認する
+
+```bash
 kaz@vcom1:~$ ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
